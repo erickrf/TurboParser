@@ -33,7 +33,8 @@ void DependencyWriter::Write(Instance *instance) {
     os_ << dependency_instance->GetPosTag(i) << "\t";
     os_ << "_" << "\t"; // Change this later
     os_ << dependency_instance->GetHead(i) << "\t";
-    os_ << dependency_instance->GetDependencyRelation(i) << endl;
+    os_ << dependency_instance->GetDependencyRelation(i) << "\t";
+    os_ << "_\t_" << endl;
   }
   os_ << endl;
 }
