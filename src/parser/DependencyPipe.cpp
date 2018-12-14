@@ -1510,18 +1510,19 @@ void DependencyPipe::LabelInstance(Parts *parts, const vector<double> &output,
         static_cast<DependencyPartLabeledArc*>((*dependency_parts)[offset + r]);
       if (output[offset + r] >= threshold) {
         int head = arc->head();
+	int modifier = arc->modifier();
         if (head == 0 && single_root) {
           double score = output[offset + r];
           if (root == -1) {
             // This is the first root we find for this sentence
-            root = head;
+            root = modifier;
             root_score = score;
           } else {
             // There was another token picked for root before; keep the one with
             // highest score and make the other its dependent.
             if (score > root_score) {
               // keep this one as the root
-              root = head;
+              root = modifier;
               root_score = score;
             } else {
               // attach this token to the previously found root
@@ -1529,8 +1530,8 @@ void DependencyPipe::LabelInstance(Parts *parts, const vector<double> &output,
             }
           }
         }
-        dependency_instance->SetHead(arc->modifier(), head);
-        dependency_instance->SetDependencyRelation(arc->modifier(),
+        dependency_instance->SetHead(modifier, head);
+        dependency_instance->SetDependencyRelation(modifier,
                                                    GetDependencyDictionary()->GetLabelName(arc->label()));
       }
     }
@@ -1542,18 +1543,19 @@ void DependencyPipe::LabelInstance(Parts *parts, const vector<double> &output,
         static_cast<DependencyPartArc*>((*dependency_parts)[offset + r]);
       if (output[offset + r] >= threshold) {
         int head = arc->head();
+	int modifier = arc->modifier();
         if (head == 0 && single_root) {
           double score = output[offset + r];
           if (root == -1) {
             // This is the first root we find for this sentence
-            root = head;
+            root = modifier;
             root_score = score;
           } else {
             // There was another token picked for root before; keep the one with
             // highest score and make the other its dependent.
             if (score > root_score) {
               // keep this one as the root
-              root = head;
+              root = modifier;
               root_score = score;
             } else {
               // attach this token to the previously found root
@@ -1561,7 +1563,7 @@ void DependencyPipe::LabelInstance(Parts *parts, const vector<double> &output,
             }
           }
         }
-        dependency_instance->SetHead(arc->modifier(), head);
+        dependency_instance->SetHead(modifier, head);
       }
     }
   }
