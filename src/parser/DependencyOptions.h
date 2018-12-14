@@ -58,6 +58,7 @@ public:
   bool use_nonprojective_arcs() { return use_nonprojective_arcs_; }
   bool use_directed_paths() { return use_directed_paths_; }
   bool use_head_bigrams() { return use_head_bigrams_; }
+  bool single_root() { return single_root_; }
 
 protected:
   string file_format_;
@@ -80,6 +81,7 @@ protected:
   bool use_nonprojective_arcs_;
   bool use_directed_paths_;
   bool use_head_bigrams_;
+  bool single_root_;
 };
 
 #endif // DEPENDENCY_OPTIONS_H_

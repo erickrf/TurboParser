@@ -84,6 +84,8 @@ DEFINE_double(pruner_posterior_threshold, 0.0001,
 DEFINE_int32(pruner_max_heads, 10,
              "Maximum number of possible head words for a given word, in basic "
              "pruning.");
+DEFINE_bool(single_root, false,
+            "Forces the parser to output a single root per sentence.");
 
 // Options for pruner training.
 // TODO: implement these options.
@@ -197,6 +199,7 @@ void DependencyOptions::CopyPrunerFlags() {
   // General flags.
   FLAGS_model_type = "af"; // A pruner is always a arc-factored model.
   FLAGS_prune_basic = false; // A pruner has no inner basic pruner.
+  FLAGS_single_root = false;
 }
 
 void DependencyOptions::Initialize() {
@@ -214,6 +217,7 @@ void DependencyOptions::Initialize() {
   file_pruner_model_ = FLAGS_file_pruner_model;
   pruner_posterior_threshold_ = FLAGS_pruner_posterior_threshold;
   pruner_max_heads_ = FLAGS_pruner_max_heads;
+  single_root_ = FLAGS_single_root;
 
   use_arbitrary_siblings_ = false;
   use_consecutive_siblings_ = false;
