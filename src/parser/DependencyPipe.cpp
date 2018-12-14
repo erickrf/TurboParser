@@ -1500,7 +1500,7 @@ void DependencyPipe::LabelInstance(Parts *parts, const vector<double> &output,
   double threshold = 0.5;
   int root = -1;
   double root_score = -10e6;
-  bool single_root = ((DependencyOptions*) options_)->single_root();
+  bool single_root = GetDependencyOptions()->single_root();
 
   if (GetDependencyOptions()->labeled()) {
     int offset, num_labeled_arcs;
@@ -1509,7 +1509,27 @@ void DependencyPipe::LabelInstance(Parts *parts, const vector<double> &output,
       DependencyPartLabeledArc *arc =
         static_cast<DependencyPartLabeledArc*>((*dependency_parts)[offset + r]);
       if (output[offset + r] >= threshold) {
-        dependency_instance->SetHead(arc->modifier(), arc->head());
+        int head = arc->head();
+        if (head == 0 && single_root) {
+          double score = output[offset + r];
+          if (root == -1) {
+            // This is the first root we find for this sentence
+            root = head;
+            root_score = score;
+          } else {
+            // There was another token picked for root before; keep the one with
+            // highest score and make the other its dependent.
+            if (score > root_score) {
+              // keep this one as the root
+              root = head;
+              root_score = score;
+            } else {
+              // attach this token to the previously found root
+              head = root;
+            }
+          }
+        }
+        dependency_instance->SetHead(arc->modifier(), head);
         dependency_instance->SetDependencyRelation(arc->modifier(),
                                                    GetDependencyDictionary()->GetLabelName(arc->label()));
       }
