@@ -104,16 +104,7 @@ then
 else
     # original: For all languages except English and Dutch,
     # replace coarse tags by fine tags.
-<<<<<<< HEAD
-    file_train_orig=${path_data}/${language}_train.conll
-    files_test_orig[0]=${path_data}/${language}_test.conll
-    # files_test_orig[1]=${path_data}/${language}_test.conll.predpos
-    file_train=${path_data}/${language}_ftags_train.conll
-    files_test[0]=${path_data}/${language}_ftags_test.conll
-    # files_test[1]=${path_data}/${language}_ftags_test.conll.predpos
-=======
     # In UD, some languages don't have fine tags
->>>>>>> origin/dev
 
 #    file_train_orig=${path_data}/${language}_train.conll.predpos
     file_train_orig=$(ls ${path_data}/*-clean-train.conllu)

@@ -19,7 +19,7 @@ suffix=tagger
 # Set path folders.
 path_bin=${root_folder} # Folder containing the binary.
 path_scripts=${root_folder}/scripts # Folder containing scripts.
-path_data=${root_folder}/data/${language} # Folder with the data.
+path_data=${root_folder}/data/treebanks/${language} # Folder with the data.
 path_models=${root_folder}/models/${language} # Folder where models are stored.
 path_results=${root_folder}/results/${language} # Folder for the results.
 
@@ -30,30 +30,23 @@ mkdir -p ${path_results}
 
 # Set file paths. Allow multiple test files.
 file_model=${path_models}/${language}_${suffix}.model
-file_train=${path_data}/${language}_train.conll.tagging
+file_train=$(ls ${path_data}/*-train.conllu)
+file_dev=$(ls ${path_data}/*-dev.conllu)
+file_test=$(ls ${path_data}/*-test.conllu)
 
 # Create tagging corpus from CoNLL data if it does not yet exist.
-if [ -e "${path_data}/${language}_train.conll" ] && [ ! -e "${path_data}/${language}_train.conll.tagging" ]; 
+if [ -e "${file_train}" ] && [ ! -e "${file_train}.tagging" ]; 
 then
     echo "Creating tagging corpus from CoNLL data."
 
-    ${path_scripts}/create_tagging_corpus.sh "${path_data}/${language}_train.conll"
-    ${path_scripts}/create_tagging_corpus.sh "${path_data}/${language}_test.conll"
-
-    if [ "$language" == "english_proj" ]
-    then
-        ${path_scripts}/create_tagging_corpus.sh "${path_data}/${language}_dev.conll"
-    fi
+    ${path_scripts}/create_tagging_corpus.sh ${file_train}
+    ${path_scripts}/create_tagging_corpus.sh ${file_dev}
+    ${path_scripts}/create_tagging_corpus.sh ${file_test}
 fi
 
-if [ "$language" == "english_proj" ]
-then
-    files_test[0]=${path_data}/${language}_test.conll.tagging
-    files_test[1]=${path_data}/${language}_dev.conll.tagging
-else
-    files_test[0]=${path_data}/${language}_test.conll.tagging
-    files_test[1]=${path_data}/${language}_dev.conll.tagging
-fi
+file_train=${file_train}.tagging
+files_test[0]=${file_test}.tagging
+files_test[1]=${file_dev}.tagging
 
 # Obtain a prediction file path for each test file.
 for (( i=0; i<${#files_test[*]}; i++ ))
