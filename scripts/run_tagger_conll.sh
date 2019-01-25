@@ -12,6 +12,7 @@ pos_type=$4
 root_folder="`cd $(dirname $0);cd ..;pwd`"
 path_bin=${root_folder}
 path_scripts=${root_folder}/scripts
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${root_folder}/deps/local/lib"
 
 tagger_input=${path_input}.tagging
 awk -F '\t' '{if ($0 == "") print ""; else if (NF>0 && $0 !~ /^#/ && $1 !~ /-/) print $2 "\t" $4}' \
