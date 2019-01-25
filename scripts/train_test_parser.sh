@@ -12,7 +12,7 @@ num_epochs=10 # Number of training epochs.
 num_epochs_pruner=10 # Number of training epochs for the pruner.
 regularization_parameter=0.001 # The C parameter in MIRA.
 regularization_parameter_pruner=1e12 # Same for the pruner.
-train=false
+train=true
 test=true
 prune=true # This will revert to false if model_type=basic.
 train_external_pruner=false # If true, the pruner is trained separately.
@@ -42,7 +42,7 @@ suffix_pruner=parser_pruner_C-${regularization_parameter_pruner}
 # Set path folders.
 path_bin=${root_folder} # Folder containing the binary.
 path_scripts=${root_folder}/scripts # Folder containing scripts.
-path_data=/Users/erick/data/conllx/${language} # Folder with the data.
+path_data=${root_folder}/data/conllx/${language} # Folder with the data.
 path_models=${root_folder}/models/${language} # Folder where models are stored.
 path_results=${root_folder}/results/${language} # Folder for the results.
 
@@ -102,33 +102,27 @@ then
     file_train=${path_data}/${language}_train.conll
     files_test[0]=${path_data}/${language}_test.conll
 else
-    # original: For all languages except English and Dutch,
+    # For all languages except English and Dutch,
     # replace coarse tags by fine tags.
-    # In UD, some languages don't have fine tags
-
-#    file_train_orig=${path_data}/${language}_train.conll.predpos
-    file_train_orig=$(ls ${path_data}/*-clean-train.conllu)
-    files_test_orig[0]=$(ls ${path_data}/*-clean-dev.conllu)
-    # files_test_orig[1]=$(ls ${path_data}/*-dev.conllu).predpos
-    file_train=${path_data}/turboparser_train.conll
-    file_test[0]=${path_data}/turboparser_test.conll
-    # file_train=${path_data}/${language}_ftags_train.conll.predpos
-    # files_test[0]=${path_data}/${language}_ftags_test.conll
+    file_train_orig=${path_data}/${language}_train.conll
+    files_test_orig[0]=${path_data}/${language}_test.conll
+    # files_test_orig[1]=${path_data}/${language}_test.conll.predpos
+    file_train=${path_data}/${language}_ftags_train.conll
+    files_test[0]=${path_data}/${language}_ftags_test.conll
     # files_test[1]=${path_data}/${language}_ftags_test.conll.predpos
-    file_train=$file_train_orig
-    file_test=$file_test_orig
-    # rm -f file_train
-    # awk 'NF>0{OFS="\t";NF=10;$4=$5;$5=$5;print}NF==0{print}' ${file_train_orig} \
-    #     > ${file_train}
 
-    # for (( i=0; i<${#files_test[*]}; i++ ))
-    # do
-    #     file_test_orig=${files_test_orig[$i]}
-    #     file_test=${files_test[$i]}
-    #     rm -f file_test
-    #     awk 'NF>0{OFS="\t";NF=10;$4=$5;$5=$5;print}NF==0{print}' ${file_test_orig} \
-    #         > ${file_test}
-    # done
+    rm -f file_train
+    awk 'NF>0{OFS="\t";NF=10;$4=$5;$5=$5;print}NF==0{print}' ${file_train_orig} \
+        > ${file_train}
+
+    for (( i=0; i<${#files_test[*]}; i++ ))
+    do
+        file_test_orig=${files_test_orig[$i]}
+        file_test=${files_test[$i]}
+        rm -f file_test
+        awk 'NF>0{OFS="\t";NF=10;$4=$5;$5=$5;print}NF==0{print}' ${file_test_orig} \
+            > ${file_test}
+    done
 fi
 
 # Obtain a prediction file path for each test file.

@@ -9,7 +9,7 @@ language=$1 # Example: "slovene" or "english_proj".
 pos_type=$2 # POS type must be either upos or xpos
     # upos is the fourth column in conllu files; xpos is the fifth
 train_algorithm=svm_mira # Training algorithm.
-num_epochs=1 # Number of training epochs.
+num_epochs=10 # Number of training epochs.
 regularization_parameter=1e12 # The C parameter in MIRA.
 train=true
 test=true
