@@ -6,15 +6,17 @@ export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${root_folder}/deps/local/lib"
 
 # Set options.
 language=$1 # Example: "slovene" or "english_proj".
+pos_type=$2 # POS type must be either upos or xpos
+    # upos is the fourth column in conllu files; xpos is the fifth
 train_algorithm=svm_mira # Training algorithm.
-num_epochs=10 # Number of training epochs.
+num_epochs=1 # Number of training epochs.
 regularization_parameter=1e12 # The C parameter in MIRA.
 train=true
 test=true
 jackknifing=true #false # True for performing jackknifing in the training data. Useful for downstream applications.
 model_type=2 # Second-order model (trigrams).
 form_cutoff=1 # Word cutoff. Only words which occur more than these times won't be considered unknown.
-suffix=tagger
+suffix=tagger-${pos_type}
 
 # Set path folders.
 path_bin=${root_folder} # Folder containing the binary.
@@ -34,15 +36,10 @@ file_train=$(ls ${path_data}/*-train.conllu)
 file_dev=$(ls ${path_data}/*-dev.conllu)
 file_test=$(ls ${path_data}/*-test.conllu)
 
-# Create tagging corpus from CoNLL data if it does not yet exist.
-if [ -e "${file_train}" ] && [ ! -e "${file_train}.tagging" ]; 
-then
-    echo "Creating tagging corpus from CoNLL data."
-
-    ${path_scripts}/create_tagging_corpus.sh ${file_train}
-    ${path_scripts}/create_tagging_corpus.sh ${file_dev}
-    ${path_scripts}/create_tagging_corpus.sh ${file_test}
-fi
+# Create tagging corpus from CoNLL data
+${path_scripts}/create_tagging_corpus.sh ${file_train} $pos_type
+${path_scripts}/create_tagging_corpus.sh ${file_dev} $pos_type
+${path_scripts}/create_tagging_corpus.sh ${file_test} $pos_type
 
 file_train=${file_train}.tagging
 files_test[0]=${file_test}.tagging
